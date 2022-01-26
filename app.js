@@ -1,0 +1,19 @@
+const express = require('express');
+const app = express();
+const router = require('./routes/keyValueStore');
+const { logger } = require('./logger.js');
+const config = require('./config');
+const { initRedis } = require('./services/redis/redis');
+
+initRedis();
+
+app.use(express.json());
+app.use('/', router);
+
+app.listen(config.port, () => {
+    logger.info(`Server listening on port ${config.port}...`);
+});
+
+process.on('uncaughtException', (err) => {
+    logger.error(err);
+});
