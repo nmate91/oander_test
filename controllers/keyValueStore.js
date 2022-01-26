@@ -1,7 +1,7 @@
 const { INTERNAL_SERVER, OK, ACCEPTED } = require('../errors/statusCodes.js');
 const { logger } = require('../logger.js');
 
-const keyValueStoreService = require('../services/redis/keyValueStore');
+const keyValueStoreService = require('../services/keyValueStore');
 
 const getValueByKey = async (req, res) => {
     const key = req.params.key;
@@ -11,7 +11,7 @@ const getValueByKey = async (req, res) => {
         return res.status(OK).json(value);
     } catch (err) {
         logger.error(err);
-        res.status(err.status || INTERNAL_SERVER).json({
+        res.status(err.statusCode || INTERNAL_SERVER).json({
             message: err.message,
         });
     }
@@ -28,7 +28,7 @@ const setValueByKey = async (req, res) => {
         res.status(ACCEPTED).send(`Successfully set with key ${key}`);
     } catch (err) {
         logger.error(err);
-        res.status(err.status || INTERNAL_SERVER).json({
+        res.status(err.statusCode || INTERNAL_SERVER).json({
             message: err.message,
         });
     }
@@ -43,7 +43,7 @@ const deleteValueByKey = async (req, res) => {
         res.status(ACCEPTED).send(`Successfully deleted with key ${key}`);
     } catch (err) {
         logger.error(err);
-        res.status(err.status || INTERNAL_SERVER).json({
+        res.status(err.statusCode || INTERNAL_SERVER).json({
             message: err.message,
         });
     }

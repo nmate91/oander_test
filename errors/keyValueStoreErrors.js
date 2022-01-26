@@ -1,5 +1,5 @@
 const config = require('../config');
-const { NOT_FOUND, BAD_REQUEST } = require('./statusCodes');
+const { NOT_FOUND, BAD_REQUEST, NO_CONTENT } = require('./statusCodes');
 
 class NotFoundError extends Error {
     constructor(key) {
@@ -25,4 +25,16 @@ class BadRequestError extends Error {
     }
 }
 
-module.exports = { NotFoundError, BadRequestError };
+class NoContentError extends Error {
+    constructor(description) {
+        super(description);
+        Object.setPrototypeOf(this, new.target.prototype);
+
+        this.name = 'NoContent';
+        this.statusCode = NO_CONTENT;
+
+        Error.captureStackTrace(this);
+    }
+}
+
+module.exports = { NotFoundError, BadRequestError, NoContentError };

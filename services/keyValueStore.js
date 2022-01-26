@@ -1,16 +1,17 @@
 const { getRedis } = require('./redis');
-const config = require('../../config');
+const config = require('../config');
 const {
     BadRequestError,
     NotFoundError,
-} = require('../../errors/keyValueStoreErrors');
+    NoContentError,
+} = require('../errors/keyValueStoreErrors');
 const {
     convertBase64ToJSON,
     convertJSONToBase64,
-} = require('../../utils/base64Converter');
+} = require('../utils/base64Converter');
 
 const hash = config.redis.hashes.keyValueStoreHash;
-const { keyEmptyMessage } = config.redis.errorMessages;
+const { keyEmptyMessage, valueNotFoundMessage } = config.redis.errorMessages;
 
 const getValueByKey = async (key) => {
     const redis = getRedis();
@@ -46,6 +47,12 @@ const deleteValueByKey = async (key) => {
     if (!key || !key.length) {
         throw new Error(keyEmptyMessage);
     }
+
+    const value = await redis.hget(hash, key);
+    if (value === undefined || value === null) {
+        throw new NoContentError(valueNotFoundMessage(key));
+    }
+
     return redis.hdel(hash, key);
 };
 
