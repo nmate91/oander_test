@@ -23,4 +23,4 @@
 ## Tracking:
 
 1. Monday `2h`
-2. Wednesday `6h`
+2. Wednesday `7h`
