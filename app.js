@@ -3,7 +3,7 @@ const app = express();
 const router = require('./routes/keyValueStore');
 const { logger } = require('./logger.js');
 const config = require('./config');
-const { initRedis } = require('./services/redis/redis');
+const { initRedis } = require('./services/redis');
 
 initRedis()
     .then(() => {

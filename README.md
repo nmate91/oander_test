@@ -16,4 +16,9 @@
 
 ## Running tests
 
+1. Run `npm run test-coverage` for tests with coverage and `npm run test-watch` for watching tests
+
 ## Tracking:
+
+1. Monday `2h`
+2. Wednesday `6h`

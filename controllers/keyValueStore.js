@@ -1,5 +1,6 @@
 const { INTERNAL_SERVER, OK, ACCEPTED } = require('../errors/statusCodes.js');
 const { logger } = require('../logger.js');
+const { getErrorMessage } = require('../utils/utils');
 
 const keyValueStoreService = require('../services/keyValueStore');
 
@@ -12,7 +13,7 @@ const getValueByKey = async (req, res) => {
     } catch (err) {
         logger.error(err);
         res.status(err.statusCode || INTERNAL_SERVER).json({
-            message: err.message,
+            message: getErrorMessage(err),
         });
     }
 };
@@ -29,7 +30,7 @@ const setValueByKey = async (req, res) => {
     } catch (err) {
         logger.error(err);
         res.status(err.statusCode || INTERNAL_SERVER).json({
-            message: err.message,
+            message: getErrorMessage(err),
         });
     }
 };
@@ -44,7 +45,7 @@ const deleteValueByKey = async (req, res) => {
     } catch (err) {
         logger.error(err);
         res.status(err.statusCode || INTERNAL_SERVER).json({
-            message: err.message,
+            message: getErrorMessage(err),
         });
     }
 };

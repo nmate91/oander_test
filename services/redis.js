@@ -6,8 +6,7 @@ let redis;
 
 const initRedis = async () => {
     if (redis) {
-        logger.error('Redis already initialized!');
-        return;
+        throw new Error('Redis already initialized!');
     }
     logger.info('Initializing redis...');
     redis = new Redis({ port: config.redis.port, host: config.redis.host });
@@ -15,8 +14,7 @@ const initRedis = async () => {
 
 const getRedis = () => {
     if (!redis) {
-        logger.error('Redis is not initialized! Call init first!');
-        return;
+        throw new Error('Redis is not initialized! Call init first!');
     }
     return redis;
 };
