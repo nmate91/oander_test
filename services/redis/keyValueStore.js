@@ -1,36 +1,56 @@
 const { getRedis } = require('./redis');
-const redis = getRedis();
 const config = require('../../config');
+const {
+    BadRequestError,
+    NotFoundError,
+} = require('../../errors/keyValueStoreErrors');
+const {
+    convertBase64ToJSON,
+    convertJSONToBase64,
+} = require('../../utils/base64Converter');
 
 const hash = config.redis.hashes.keyValueStoreHash;
-const keyEmptyMessage = config.redis.errorMessages.keyEmptyMessage;
+const { keyEmptyMessage } = config.redis.errorMessages;
 
-const getValueByKey = (key) => {
+const getValueByKey = async (key) => {
+    const redis = getRedis();
+
     if (!key || !key.length) {
-        logger.error(keyEmptyMessage);
-        return;
+        throw new BadRequestError(config.redis.errorMessages.keyEmptyMessage);
     }
-    return redis.hget(hash, key);
+
+    const value = await redis.hget(hash, key);
+    if (value === undefined || value === null) {
+        throw new NotFoundError(key);
+    }
+    const convertedValue = convertBase64ToJSON(value);
+
+    return convertedValue;
 };
 
-const createValueByKey = (key, value) => {
+const setValueByKey = async (key, value) => {
+    const redis = getRedis();
+
     if (!key || !key.length) {
-        logger.error(keyEmptyMessage);
-        return;
+        throw new Error(keyEmptyMessage);
     }
-    return redis.hset(hash, key, value);
+
+    const b64ValueToSave = convertJSONToBase64(value);
+
+    return redis.hset(hash, key, b64ValueToSave);
 };
 
-const deleteValueByKey = (key) => {
+const deleteValueByKey = async (key) => {
+    const redis = getRedis();
+
     if (!key || !key.length) {
-        logger.error(keyEmptyMessage);
-        return;
+        throw new Error(keyEmptyMessage);
     }
     return redis.hdel(hash, key);
 };
 
 module.exports = {
     getValueByKey,
-    createValueByKey,
+    setValueByKey,
     deleteValueByKey,
 };

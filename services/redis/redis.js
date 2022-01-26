@@ -4,11 +4,12 @@ const { logger } = require('../../logger');
 
 let redis;
 
-const initRedis = () => {
+const initRedis = async () => {
     if (redis) {
         logger.error('Redis already initialized!');
         return;
     }
+    logger.info('Initializing redis...');
     redis = new Redis({ port: config.redis.port, host: config.redis.host });
 };
 
